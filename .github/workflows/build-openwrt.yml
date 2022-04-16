@@ -44,14 +44,13 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
-    - name: Clone Repository
-      uses: actions/checkout@v2
+    - name: Checkout
+      uses: actions/checkout@main
 
     - name: Initialization environment
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
-        sudo timedatectl set-timezone "Asia/Shanghai" 
         sudo -E swapoff -a
         sudo -E rm -f /swapfile
         sudo -E docker image prune -a -f
@@ -67,7 +66,10 @@ jobs:
         sudo -E apt-get clean
         git config --global user.name 'GitHub Actions' && git config --global user.email 'noreply@github.com'
         df -h
-        
+        sudo timedatectl set-timezone "$TZ"
+        sudo mkdir -p /workdir
+        sudo chown $USER:$GROUPS /workdir
+
     - name: Clone source code
       working-directory: /workdir
       run: |
